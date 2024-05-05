@@ -1,0 +1,56 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
+  // next line is needed for build
+  binaryTargets   = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider  = "mongodb"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL")
+}
+
+model Companion {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  userId       String
+  userName     String
+  src          String
+  name         String @db.String
+  description  String
+  instructions String @db.String
+  seed         String @db.String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  messages Message[]
+
+  @@fulltext([name])
+}
+
+enum Role {
+  user
+  system
+  assistant
+}
+
+model Message {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  role    Role
+  content String @db.String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  companionId String @db.ObjectId
+  userId      String
+
+  companion Companion @relation(fields: [companionId], references: [id], onDelete: Cascade)
+}

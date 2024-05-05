@@ -26,18 +26,8 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
         <body>
-          <header>
-            <SignedOut>
-              <SignInButton />
-            </SignedOut>
-            <SignedIn>
-              <UserButton />
-            </SignedIn>
-          </header>
-          <main className="h-full">
-            <Navbar />
-            {children}
-          </main>
+
+          {children}
         </body>
       </html>
     </ClerkProvider>
